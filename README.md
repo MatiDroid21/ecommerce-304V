@@ -162,4 +162,4 @@ curl -s http://localhost:8083/inventory/api/inventories
   }
 ]
 ```
-
+---
