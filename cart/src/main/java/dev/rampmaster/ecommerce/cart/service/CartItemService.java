@@ -25,6 +25,7 @@ public class CartItemService {
     }
 
     public CartItem create(CartItem entity) {
+        validateItem(entity); // <-Validacion cantidad carrito.
         entity.setId(null);
         return repository.save(entity);
     }
@@ -43,6 +44,14 @@ public class CartItemService {
         }
         repository.deleteById(id);
         return true;
+    }
+
+    // Validaciones de negocio para la entidad CartItem
+    public void validateItem(CartItem entity){
+        // El carrito no puede quedar en negativo.
+        if(entity.getQuantity() <= 0){
+            throw new IllegalArgumentException("La cantidad debe ser mayor a 0");
+        }
     }
 }
 

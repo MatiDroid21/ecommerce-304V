@@ -4,14 +4,7 @@ import dev.rampmaster.ecommerce.cart.model.CartItem;
 import dev.rampmaster.ecommerce.cart.service.CartItemService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -56,5 +49,12 @@ public class CartItemController {
         }
         return ResponseEntity.noContent().build();
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGlobalError(Exception ex) {
+        // Este atrapa CUALQUIER error que no tenga un manejador específico
+        return ResponseEntity.badRequest().build(); //badRequest: 400 o 500 si algo falla.
+    }
+
 }
 
