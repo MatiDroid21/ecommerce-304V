@@ -25,7 +25,6 @@ public class CartItemService {
     }
 
     public CartItem create(CartItem entity) {
-        validateItem(entity); // <-Validacion cantidad carrito.
         entity.setId(null);
         return repository.save(entity);
     }
@@ -38,20 +37,16 @@ public class CartItemService {
         return Optional.of(repository.save(entity));
     }
 
+    public List<CartItem> findbyUserId(long userId){
+        return repository.findByUserId(userId);
+    }
+
     public boolean delete(Long id) {
         if (!repository.existsById(id)) {
             return false;
         }
         repository.deleteById(id);
         return true;
-    }
-
-    // Validaciones de negocio para la entidad CartItem
-    public void validateItem(CartItem entity){
-        // El carrito no puede quedar en negativo.
-        if(entity.getQuantity() <= 0){
-            throw new IllegalArgumentException("La cantidad debe ser mayor a 0");
-        }
     }
 }
 
