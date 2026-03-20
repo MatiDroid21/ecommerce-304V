@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "cart_items")
 @Data // Agrupación de anotaciones: Getters & Setters
@@ -20,5 +22,21 @@ public class CartItem {
     private Long userId;
     private Long productId;
     private Integer quantity;
+
+    @Builder.Default
+    private String status = "PENDING";
+
+    @Column(name="create_at", nullable = true, updatable = true)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        if(this.status == null){
+            this.status = "PENDING";
+        }
+    }
+
+
 }
 
