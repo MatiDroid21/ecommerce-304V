@@ -1,5 +1,7 @@
 package dev.rampmaster.ecommerce.cart.model;
 
+import dev.rampmaster.ecommerce.cart.DTO.ProductDTO;
+import dev.rampmaster.ecommerce.cart.DTO.UserDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,10 +12,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "cart_items")
-@Data // Agrupación de anotaciones: Getters & Setters
-@NoArgsConstructor // Genera el constructor vacío (obligatorio para JPA)
-@AllArgsConstructor // Genera el constructor con todos los campos
-@Builder // Te permite crear objetos de forma más legible
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CartItem {
 
     @Id
@@ -23,10 +25,16 @@ public class CartItem {
     private Long productId;
     private Integer quantity;
 
+    @Transient
+    private ProductDTO product;
+
+    @Transient
+    private UserDTO user;
+
     @Builder.Default
     private String status = "PENDING";
 
-    @Column(name="create_at", nullable = true, updatable = true)
+    @Column(name="create_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -36,7 +44,4 @@ public class CartItem {
             this.status = "PENDING";
         }
     }
-
-
 }
-

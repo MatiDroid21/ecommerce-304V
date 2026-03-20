@@ -30,6 +30,12 @@ public class CartItemController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    //Simulacion de compra de usuario
+    @GetMapping("/user/{userId}")
+    public List<CartItem> findByUserId(@PathVariable Long userId) {
+        return service.findbyUserId(userId);
+    }
+
     @PostMapping
     public ResponseEntity<CartItem> create(@RequestBody CartItem entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(entity));
@@ -57,4 +63,3 @@ public class CartItemController {
     }
 
 }
-

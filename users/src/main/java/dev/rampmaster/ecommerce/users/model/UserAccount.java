@@ -1,62 +1,21 @@
 package dev.rampmaster.ecommerce.users.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data // Genera Getters, Setters, toString, equals y hashCode automáticamente
+@NoArgsConstructor // Constructor vacío para JPA
+@AllArgsConstructor // Constructor con todos los campos
+@Builder // Para crear usuarios fácil: UserAccount.builder().username("Pitt").build()
 public class UserAccount {
 
     private Long id;
     private String username;
     private String email;
     private String role;
-    private boolean active;
 
-    public UserAccount() {
-    }
-
-    public UserAccount(Long id, String username, String email, String role, boolean active) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.role = role;
-        this.active = active;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+    @Builder.Default
+    private boolean active = true; // Por defecto activo
 }
-

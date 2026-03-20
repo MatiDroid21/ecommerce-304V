@@ -1,7 +1,9 @@
 package dev.rampmaster.ecommerce.cart.tasks;
 
+import dev.rampmaster.ecommerce.cart.client.UserClient;
 import dev.rampmaster.ecommerce.cart.model.CartItem;
 import dev.rampmaster.ecommerce.cart.repository.CartItemRepository;
+import dev.rampmaster.ecommerce.cart.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,19 +17,31 @@ public class CartReminderTask {
     @Autowired
     private CartItemRepository cartItemRepository;
 
-    //Documentacion: https://docs.spring.io/spring-framework/reference/integration/scheduling.html
-    //Scheduled automatización para carritos en abandono.
-    //@Scheduled(cron = "0 0 * * * *") -> Seg,Min,Hrs,Dia,Mes,Año
-    @Scheduled(fixedRate = 10000) // -> Cada 10 segundos
-    public void revisarCarritosAbandonados(){
-        LocalDateTime limite = LocalDateTime.now().plusMinutes(5);
+    @Autowired
+    private UserClient userClient;
 
-        List<CartItem> abandonados = cartItemRepository.findByStatusAndCreatedAtBefore("PENDING",limite);
+    @Autowired
+    private NotificationService notificationService;
 
-        //Realizar mejora enviando emails al usuario.
-        if(!abandonados.isEmpty()){
-            System.out.println("LOG: Se encontraron " + abandonados.size() + " carritos abandonados");
+    @Scheduled(fixedRate = 60000) // Cada minuto para probar
+    public void revisarYNotificar() {
+        LocalDateTime limite = LocalDateTime.now().minusMinutes(1);
+        List<CartItem> abandonados = cartItemRepository.findByStatusAndCreatedAtBefore("PENDING", limite);
+
+        for (CartItem item : abandonados) {
+            try {
+                var user = userClient.getUserById(item.getUserId());
+                if (user != null) {
+                    notificationService.enviarRecordatorioCarrito(user.getEmail(), user.getUsername());
+
+                    // IMPORTANTE: Cambia el estado para que no le mande 100 correos!!
+                    item.setStatus("REMINDED");
+                    cartItemRepository.save(item);
+                }
+            } catch (Exception e) {
+                // Log the error, so you can debug if the user service is down
+                System.err.println("Error fetching user " + item.getUserId() + ": " + e.getMessage());
+            }
         }
     }
-
 }

@@ -45,5 +45,10 @@ public class UserAccountRepository {
     public void deleteById(Long id) {
         storage.remove(id);
     }
-}
 
+    public void deleteAll() {
+        // Clear the storage and reset the sequence for a clean state
+        storage.clear();
+        sequence.set(0);
+    }
+}
