@@ -10,18 +10,26 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
     private JavaMailSender mailSender;
-    /*
-    -JavaMailSender -> Configura una interfaz para utilizar los datos en properties y poder enviar correos.
 
-    */
     @Override
     public void enviarRecordatorioCarrito(String email, String username) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("¡E-Commerce 'Cart': Te espera tu carrito!");
-        message.setText("Hola " + username + ",\nVimos que dejaste productos en tu carrito. ¡Vuelve antes de que se agoten!");
+        message.setSubject("¡Alerta de Carrito Abandonado en E-Commerce 'Cart'!");
+        
+        String text = String.format(
+            "Hola %s,\n\n" +
+            "¡Hemos notado que dejaste algunos artículos en tu carrito de compras!\n\n" +
+            "Los productos populares se agotan rápido y no queremos que te quedes sin los tuyos.\n\n" +
+            "Para completar tu compra, haz clic aquí: http://tu-ecommerce.com/cart\n\n" +
+            "¡Gracias por tu interés!\n" +
+            "El equipo de E-Commerce 'Cart'",
+            username
+        );
+        
+        message.setText(text);
 
         mailSender.send(message);
-        System.out.println("LOG: Correo enviado con éxito a " + email);
+        System.out.println("LOG: Correo de alerta de carrito abandonado enviado con éxito a " + email);
     }
 }
