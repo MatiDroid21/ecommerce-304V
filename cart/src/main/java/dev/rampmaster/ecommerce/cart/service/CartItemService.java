@@ -59,8 +59,25 @@ public class CartItemService {
         return true;
     }
 
+    public List<CartItem> applyCoupon(Long userId, String couponCode) {
+        if (!"DESC10".equalsIgnoreCase(couponCode)) {
+            throw new IllegalArgumentException("Invalid coupon code");
+        }
+
+        List<CartItem> cartItems = findbyUserId(userId);
+        double discountFactor = 0.90; // 10% descuento
+
+        for (CartItem item : cartItems) {
+            if (item.getProduct() != null && item.getProduct().getPrice() != null) {
+                long originalPrice = item.getProduct().getPrice();
+                long discountedPrice = (long) (originalPrice * discountFactor);
+                item.getProduct().setDiscountedPrice(discountedPrice);
+            }
+        }
+        return cartItems;
+    }
+
     private CartItem enrichCartItem(CartItem cartItem) {
-        // Enrich with Product details
         try {
             var product = productClient.getProductById(cartItem.getProductId());
             cartItem.setProduct(product);
@@ -68,7 +85,6 @@ public class CartItemService {
             System.err.println("Error fetching product " + cartItem.getProductId() + ": " + e.getMessage());
         }
 
-        // Enrich with User details
         try {
             var user = userClient.getUserById(cartItem.getUserId());
             cartItem.setUser(user);

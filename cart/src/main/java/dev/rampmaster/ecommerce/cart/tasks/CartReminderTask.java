@@ -39,7 +39,7 @@ public class CartReminderTask {
                     cartItemRepository.save(item);
                 }
             } catch (Exception e) {
-                // Log the error, so you can debug if the user service is down
+
                 System.err.println("Error fetching user " + item.getUserId() + ": " + e.getMessage());
             }
         }

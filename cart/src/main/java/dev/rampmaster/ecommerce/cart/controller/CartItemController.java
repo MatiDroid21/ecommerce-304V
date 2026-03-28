@@ -1,5 +1,6 @@
 package dev.rampmaster.ecommerce.cart.controller;
 
+import dev.rampmaster.ecommerce.cart.DTO.CouponRequestDTO;
 import dev.rampmaster.ecommerce.cart.model.CartItem;
 import dev.rampmaster.ecommerce.cart.service.CartItemService;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,6 @@ public class CartItemController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    //Simulacion de compra de usuario
     @GetMapping("/user/{userId}")
     public List<CartItem> findByUserId(@PathVariable Long userId) {
         return service.findbyUserId(userId);
@@ -56,10 +56,22 @@ public class CartItemController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGlobalError(Exception ex) {
-        // Este atrapa CUALQUIER error que no tenga un manejador específico
-        return ResponseEntity.badRequest().build(); //badRequest: 400 o 500 si algo falla.
+    //Cupon de descuento
+    //#NOTA CORREGIR Y PREGUNTAR SI ERA AQUIEN LE PERTENECIA EL CARRITO O QUE PRODUCTOS LLEVA EN ELCARRITO AL PROFE
+    //#MEJORA A FUTURO: AGREGAR EL DESCUENTO APLICADO A CADA PRODUCTO DEL CARRITO
+    //#MEJORA: MOSTRAR EL % DE DESCUENTO , AUNQE LO DICE EN EL CODIGO DE DSCT
+    @PostMapping("/user/{userId}/apply-coupon")
+    public ResponseEntity<List<CartItem>> applyCoupon(@PathVariable Long userId, @RequestBody CouponRequestDTO request) {
+        try {
+            List<CartItem> discountedCart = service.applyCoupon(userId, request.getCouponCode());
+            return ResponseEntity.ok(discountedCart);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGlobalError(Exception ex) {
+        return ResponseEntity.badRequest().build();
+    }
 }
