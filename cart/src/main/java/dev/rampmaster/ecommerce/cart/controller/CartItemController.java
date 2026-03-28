@@ -1,5 +1,6 @@
 package dev.rampmaster.ecommerce.cart.controller;
 
+
 import dev.rampmaster.ecommerce.cart.DTO.CouponRequestDTO;
 import dev.rampmaster.ecommerce.cart.model.CartItem;
 import dev.rampmaster.ecommerce.cart.service.CartItemService;
@@ -8,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/carts")
@@ -22,7 +26,11 @@ public class CartItemController {
     @GetMapping
     public List<CartItem> findAll() {
         return service.findAll();
+        
+        
     }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<CartItem> findById(@PathVariable Long id) {

@@ -34,7 +34,9 @@ public class CartItemService {
 
     public CartItem create(CartItem entity) {
         entity.setId(null);
-        return repository.save(entity);
+        CartItem savedItem = repository.save(entity);
+        return enrichCartItem(savedItem);
+       // return repository.save(entity);
     }
 
     public Optional<CartItem> update(Long id, CartItem entity) {
